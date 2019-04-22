@@ -58,5 +58,5 @@
  - Please contact vitalpointz for howto videos, more details and help.
 
 ## Known Issues
- - After the vesp updates the device image via OTA, Flashing the new image via IDE may causing eeprom read failure on init data in random scenarios. For a work around: Please flash the image again.
+ - After the vesp updates the device image via OTA, Flashing the new image via IDE may cause eeprom read failure on init data in random scenarios. For a work around: Re-flash the image again.
 
