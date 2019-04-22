@@ -3,7 +3,7 @@ This repository contains the IOT Device Simulators and  source code for Device A
 connecting to vitalpointz secure IOT Core/Platform. 
 
 
-Simulator Folder contains bunch of Node-RED Flows that act as IOT Devices.
+Simulator Folder contains example Node-RED Flows that act as IOT Devices.
 
 
-VESPaSketches Folder contains NodeMCU and ESP VESPa libraries and Reference Agent implementation.
+VESPaSketches Folder contains VESPa library for NodeMCU and ESP01 based devices and Reference Agent implementation.
