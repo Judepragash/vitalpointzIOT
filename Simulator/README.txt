@@ -1,7 +1,8 @@
 This repository contains node-RED flows that simulate IOT device(s) to vitalpointz secure IOT Core/Platform. 
 These flows are provided to illustrate the device on-boarding API, way of publishing/subscribing messages into 
-vitalpointz secure IOT Core/Platfrom. Import these flows in to node-RED installed on your laptop or VM and follow the 
-inline documentation. 
+vitalpointz secure IOT Core/Platfrom. 
+
+Import these flows in to node-RED installed on your laptop or VM and follow the inline documentation. 
 
 Pre-Reqs: These flows would requrie you to install these nodes using 'manage palette' menu in your Node-RED instance
 (a)node-red-contrib-string (b)node-red-contrib-msg-speed
