@@ -1,6 +1,7 @@
 [![N|Solid](https://user-images.githubusercontent.com/37981409/60417194-709ed780-9bfd-11e9-8fc1-28d2869d03d5.png)](https://vitalpointz.io/)
 
-This code and steps in this project meant to work with Vitalpointz IoT platform. If you are not familier with Vitalpointz IoT Platform and offerings, refer to the links given below
+Code and steps in this project meant to work with Vitalpointz IoT Core/Core Lite platform. If you are not familier with Vitalpointz IoT Platform and offerings, refer to the links given at the end.
+
 # VESPa-U for NodeMCU on FreeRTOS & TLS
 ### Steps to Setup the Environment
 ##### Supported IoT Board
@@ -81,6 +82,6 @@ Sending mqtt message = 'msgno=2,temprature_celcius=21,wind_mps=2,pressure_hpa=11
 > To know more on APIs Please read API document. 
 
 ### Important Links
-* [Official Vitalpointz Site](https://docs.espressif.com/projects/esp8266-rtos-sdk/en/latest/get-started/macos-setup.html)
+* [Official Vitalpointz Site](https://vitalpointz.io/)
 * [Vitalpointz IoT Core Lite](https://marketplace.digitalocean.com/apps/vitalpointz-iot-core-lite)
 * [Vitalpointz IoT Product Docs ](https://judepragash.github.io/vitalpointzIOT_Docs/ProdDoc.html)
