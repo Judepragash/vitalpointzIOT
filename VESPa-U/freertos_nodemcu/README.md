@@ -1,4 +1,4 @@
-[![N|Solid](https://user-images.githubusercontent.com/37981409/60417194-709ed780-9bfd-11e9-8fc1-28d2869d03d5.png)](https://vitalpointz.io/)
+[![N|Solid](https://user-images.githubusercontent.com/37981409/60482555-a2707680-9caf-11e9-8ee0-c128a9585d06.png)](https://vitalpointz.io/)
 
 Code and steps in this project meant to work with Vitalpointz IoT Core/Core Lite platform. If you are not familier with Vitalpointz IoT Platform and offerings, refer to the links given at the end.
 
