@@ -21,8 +21,10 @@
 static const char *TAG = "VESPA";
 
 /* Prerequisites : 
-  Wifi, HTTP and MQTT libraries,
-  Change max packet size for mqtt in PubSub client library #define MQTT_MAX_PACKET_SIZE 2048
+  Wifi, HTTP and MQTT libraries from corresponding platfrom and Change APIs accordingly,
+  Change max packet size for mqtt to 2048.
+  Need 8192 buffer to hold response from capability API.
+  cJSON parser library is used for response parsing.
 */
 
 typedef struct vespa_config_s {
@@ -30,6 +32,7 @@ typedef struct vespa_config_s {
     char userid[32];
     char password[32];
     char authcode[32];
+    char hash[64];
 } vespa_config_t;
 
 typedef struct vespa_mqtt_s {
@@ -39,10 +42,12 @@ typedef struct vespa_mqtt_s {
     void * mqtt_handle;
 } vespa_mqtt_t;
 
+/* Main vespa dev/handle structure */
 typedef struct vespa_s {
     char userid[32];
     char deviceid[32];
     char devicename[64];
+    char devicehash[64];
     char device_authcode[32]; //tenantid may be used as authcode
     char tenantid[32];
     char password[32];

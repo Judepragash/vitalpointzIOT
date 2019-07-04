@@ -81,8 +81,8 @@ CONFIG_ESPTOOLPY_ENABLE_SAVELOG=
 #
 # Example Configuration
 #
-CONFIG_WIFI_SSID="VPZ-FOGOS-LANNER"
-CONFIG_WIFI_PASSWORD="V!t@lpointzFOGOS"
+CONFIG_WIFI_SSID="VitalpointzWifi"
+CONFIG_WIFI_PASSWORD="VitalpointzWifi"
 
 #
 # Partition Table

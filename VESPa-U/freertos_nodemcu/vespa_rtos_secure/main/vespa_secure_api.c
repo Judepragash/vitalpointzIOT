@@ -1,7 +1,19 @@
 #include "vespa_secure_api.h"
 
-/* Common http reponse buffer to store response data */
+/* Common http reponse buffer to store response data 
+   On ESP8266 we are prcoessing response using ESP HTTP APIs,
+   We need global buffer as response is processed in event handler 
+   If we get in context HTTP response, 
+   the buffer passed to api may be used directly */
 char http_response[8192];
+
+
+/* 
+   ESP Specific HTTP response handler, common for all 3 APIs.
+   Fill the response buffer with HTTP data received via combining all chunks. 
+   Headers will not be stored.
+   Vespa parse API will use this response buffer to decode needed data.
+ */
 esp_err_t _https_resp_handler(esp_http_client_event_t *evt)
 {       
     switch(evt->event_id) {
@@ -34,6 +46,12 @@ esp_err_t _https_resp_handler(esp_http_client_event_t *evt)
     return ESP_OK;
 }
 
+/*
+    Login API
+    Prepare and send HTTPS POST message with need information.
+    Information is received via user input via vespa Init
+    This API will provide tenant specific URL or Ids
+*/
 void vespa_secure_login(struct vespa_s * vespa, char * buffer)
 {
     char login_api[64];
@@ -76,16 +94,19 @@ void vespa_secure_login(struct vespa_s * vespa, char * buffer)
     strncpy(buffer, http_response, strlen(http_response));    
 }
 
-//Call auth API After login response api only
+/* Call auth API After processing login response buffer only 
+   This API is used to autenticate a valid device */
+
 void vespa_secure_device_auth(struct vespa_s * vespa, char * buffer)
 {
     char auth_api[128];
+    char api_data[128];
     char auth_token[512];
 
     memset(http_response,0,sizeof(http_response));
 
     memset(auth_api,0,sizeof(auth_api));
-    sprintf(auth_api,"%s/device/auth/%s",vespa->http_tenant_url,vespa->device_authcode);
+    sprintf(auth_api,"%s/device/allocateAuth",vespa->http_tenant_url);
 
     memset(auth_token,0,sizeof(auth_token));
     sprintf(auth_token,"Bearer %s",vespa->http_token);
@@ -97,31 +118,37 @@ void vespa_secure_device_auth(struct vespa_s * vespa, char * buffer)
 
     //Perform HTTP POST with Content-Type as application json
     ESP_LOGI(TAG, "Auth URL: '%s'", auth_api);
+    sprintf(api_data, "{\"hash\": \"%s\",\"devicetype\": \"device\"}", vespa->devicehash);
+    ESP_LOGI(TAG, "Auth Post Data: '%s'", api_data);
 
     esp_http_client_handle_t client = esp_http_client_init(&config);
     esp_http_client_set_url(client, auth_api);
     esp_http_client_set_header(client, "Authorization", auth_token);
     esp_http_client_set_header(client, "Content-Type", "application/json");
-    esp_http_client_set_method(client, HTTP_METHOD_GET);
+    esp_http_client_set_method(client, HTTP_METHOD_POST);
+    esp_http_client_set_post_field(client, api_data, strlen(api_data));
     esp_err_t err = esp_http_client_perform(client);
-    if (err == ESP_OK) 
+    if (err == ESP_OK)
     {
         ESP_LOGI(TAG, "HTTP Get Sucess: %d", err);
-	//On Sucess we have stored payload from response in login_response buffer
+       //On Sucess we have stored payload from response in login_response buffer
     } else {
         ESP_LOGE(TAG, "HTTP Get Failed: %d", err);
     }
     esp_http_client_cleanup(client); //Must do cleanup if init is done
-    
+
     /* Fill the HTTP response data after removing HEADER into buffer*/
     strncpy(buffer, http_response, strlen(http_response));
 }
 
+/* Call the capability API after processing device_auth APi response buffer only 
+   This API response will provide certificates and MQTT whitelisted topic
+*/
 void vespa_secure_device_cap(struct vespa_s * vespa, char * buffer)
 {
-    char cap_api[256];
+    char cap_api[512];
     char auth_token[512];
-    char post_data[64];
+    char post_data[256];
 
     memset(http_response,0,sizeof(http_response));
     memset(cap_api,0,sizeof(cap_api));
@@ -129,7 +156,7 @@ void vespa_secure_device_cap(struct vespa_s * vespa, char * buffer)
     memset(auth_token,0,sizeof(auth_token));
     sprintf(auth_token,"Bearer %s",vespa->http_token);
     memset(&post_data,0,sizeof(post_data));
-    sprintf(post_data, "{ \"devicetype\": \"MicroController\"}");   //Send the request
+    sprintf(post_data, "{ \"devicetype\": \"MicroController\", \"SupportedCommands\": [{\"id\":\"1\",\"displayName\": \"Restart\", \"command\": \"restart\",\"args\": [ ]}]}");   //Send the request
 
     esp_http_client_config_t config = {
         .url = cap_api,
@@ -242,6 +269,7 @@ void vespa_parse_auth_response(struct vespa_s * vespa, char* data)
 {
     const cJSON *name = NULL;
 
+    printf("Auth Response  = '%s'\n", data);
     cJSON *json = cJSON_Parse(data);
     if (json == NULL){
         const char *error_ptr = cJSON_GetErrorPtr();
@@ -319,12 +347,16 @@ void vespa_parse_cap_response(struct vespa_s * vespa, char* data)
     printf("Client Cert = '%s'\n", vespa->client_cert);
 }
 
-/* Fill config data into handle */
+/* 
+    Fill config data into handle.
+    This is user provide data and should be filled into config and passed to this API.
+*/
 void vespa_initialize(struct vespa_s * vespa, struct vespa_config_s * config)
 {
     strcpy(vespa->vesp_admin_url,config->vesp_url);
     strcpy(vespa->userid,config->userid);
     strcpy(vespa->password,config->password);
     strcpy(vespa->device_authcode,config->authcode);
+    strcpy(vespa->devicehash,config->hash);
 }
 
