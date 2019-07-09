@@ -29,7 +29,8 @@ export IDF_PATH=$HOME/esp/ESP8266_RTOS_SDK
   - Save & Exit
 #### Configuration, Flashing & Onboarding
   - Open <working dir>/vespa_rtos_secure/main/vespa.c in a text editor
-  - Update line 17, 18, 19 & 20 with “Vitalpointz IoT Platform URL”, “Username”, “password” & “auth code”. [Where to get these?](https://judepragash.github.io/vitalpointzIOT_Docs/ProdMan/ProdManPgs/dev_registration.html) 
+  - Update lines in function "user_config_init" with “Vitalpointz IoT Platform URL”, “Username”, “password” & “tenant_token”. [Where to get these?](https://judepragash.github.io/vitalpointzIOT_Docs/ProdMan/ProdManPgs/dev_registration.html) 
+  - Define your unique device hash to distinctively identify the device at the vesp platform, this hash should not change during device lifetime.
   - Save the file
   - Flash the NodeMCU with command “make flash”
 ```sh
